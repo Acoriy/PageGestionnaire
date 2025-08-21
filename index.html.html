@@ -1,0 +1,2943 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billun Gestionnaire - Transport Dubois</title>
+    <style>
+        /* Variables couleurs cohérentes avec l'écosystème Billun */
+        :root {
+            --blue-primary: #2563eb;
+            --blue-dark: #1d4ed8;
+            --blue-light: #3b82f6;
+            --blue-bg: #eff6ff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --white: #ffffff;
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --orange: #f97316;
+            --red: #ef4444;
+            --purple: #8b5cf6;
+        }
+
+        /* Reset et styles de base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            color: var(--gray-800);
+            background-color: var(--gray-50);
+            line-height: 1.6;
+        }
+
+        /* Layout principal */
+        .manager-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--gray-200);
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: var(--blue-bg);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .company-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--blue-primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .company-info {
+            flex: 1;
+        }
+
+        .company-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--blue-primary);
+        }
+
+        .brand-text {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+        }
+
+        .user-info {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-top: 8px;
+        }
+
+        /* Navigation menu avec icônes métier */
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: var(--gray-600);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            font-size: 0.9rem;
+        }
+
+        .nav-link:hover {
+            background: var(--blue-bg);
+            color: var(--blue-primary);
+            border-left-color: var(--blue-light);
+        }
+
+        .nav-link.active {
+            background: var(--blue-bg);
+            color: var(--blue-primary);
+            border-left-color: var(--blue-primary);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Zone de contenu principal */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-header {
+            background: var(--white);
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .content-body {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* Cartes de contenu */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--gray-200);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Boutons */
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--blue-primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-dark);
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-600);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-600);
+            color: var(--white);
+        }
+
+        .btn-success {
+            background: var(--green);
+            color: var(--white);
+        }
+
+        .btn-warning {
+            background: var(--orange);
+            color: var(--white);
+        }
+
+        .btn-logout {
+            background: var(--red);
+            color: var(--white);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Tables avec design amélioré */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+            vertical-align: top;
+        }
+
+        .data-table th {
+            background: var(--gray-100);
+            font-weight: 600;
+            color: var(--gray-800);
+            font-size: 0.875rem;
+        }
+
+        .data-table tr:hover {
+            background: var(--gray-50);
+        }
+
+        /* Badges de statut avec codes couleur Billun */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .badge-green {
+            background: var(--green);
+            color: var(--white);
+        }
+
+        .badge-yellow {
+            background: var(--yellow);
+            color: var(--gray-800);
+        }
+
+        .badge-orange {
+            background: var(--orange);
+            color: var(--white);
+        }
+
+        .badge-red {
+            background: var(--red);
+            color: var(--white);
+        }
+
+        .badge-purple {
+            background: var(--purple);
+            color: var(--white);
+        }
+
+        .badge-active {
+            background: var(--green);
+            color: var(--white);
+        }
+
+        .badge-pending {
+            background: var(--yellow);
+            color: var(--gray-800);
+        }
+
+        /* Formulaires avec layout amélioré */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        .form-input, .form-select {
+            padding: 10px 12px;
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--blue-primary);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Statistiques dashboard */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--blue-primary);
+        }
+
+        .stat-card.warning {
+            border-left-color: var(--orange);
+        }
+
+        .stat-card.success {
+            border-left-color: var(--green);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--blue-primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        /* Messages de notification */
+        .notification {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .notification.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--green);
+            border: 1px solid var(--green);
+        }
+
+        .notification.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--yellow);
+            border: 1px solid var(--yellow);
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        /* Sections de contenu */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Modal pour l'application mobile */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-600);
+        }
+
+        .anomaly-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* Styles pour les onglets de sous-catégories */
+        .sub-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .sub-tab {
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--gray-600);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .sub-tab.active {
+            color: var(--blue-primary);
+            border-bottom-color: var(--blue-primary);
+            font-weight: 600;
+        }
+
+        .sub-tab:hover {
+            color: var(--blue-primary);
+        }
+
+        /* Galerie photos */
+        .photo-gallery-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+        }
+
+        .photo-gallery-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-gallery-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 90vw;
+            max-height: 90vh;
+            width: 800px;
+            overflow-y: auto;
+        }
+
+        .photo-gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .photo-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .photo-item {
+            background: var(--gray-50);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--gray-200);
+            transition: transform 0.2s ease;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.02);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .photo-info {
+            padding: 12px;
+        }
+
+        .photo-title {
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 4px;
+            font-size: 0.875rem;
+        }
+
+        .photo-meta {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+        }
+
+        .photo-status {
+            margin-top: 8px;
+        }
+
+        /* Lightbox pour voir les photos en grand */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox.show {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .anomaly-detail-card {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--orange);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .anomaly-detail-card.critical {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--red);
+        }
+
+        .anomaly-detail-card.minor {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--yellow);
+        }
+
+        /* Style pour la position GPS */
+        .gps-coordinates {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: var(--gray-600);
+            background: var(--gray-100);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 2px;
+            display: inline-block;
+        }
+
+        .location-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .location-link {
+            color: var(--blue-primary);
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+
+        .location-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 240px;
+            }
+            
+            .content-header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 12px;
+                align-items: stretch;
+            }
+            
+            .content-body {
+                padding: 20px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .photo-gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .manager-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .data-table {
+                font-size: 0.8rem;
+            }
+            
+            .modal-content {
+                margin: 20px;
+                width: calc(100% - 40px);
+            }
+
+            .photo-gallery-content {
+                width: calc(100% - 40px);
+                height: calc(100% - 40px);
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="manager-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="company-logo">
+                    <div class="logo-icon">🚛</div>
+                    <div class="company-info">
+                        <div class="company-name">Transport Dubois</div>
+                        <div class="brand-text">Billun Gestionnaire</div>
+                    </div>
+                </div>
+                <div class="user-info">
+                    Connecté en tant que <strong>Marie Dubois</strong><br>
+                    Gestionnaire principal
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <a href="#" class="nav-link" data-section="users">
+                        <span class="nav-icon">👥</span>
+                        Utilisateurs
+                    </a>
+                    <a href="#" class="nav-link" data-section="vehicles">
+                        <span class="nav-icon">🚛</span>
+                        Matériel
+                    </a>
+                    <a href="#" class="nav-link" data-section="depots">
+                        <span class="nav-icon">🏭</span>
+                        Dépôts & Ateliers
+                    </a>
+                    <a href="#" class="nav-link" data-section="mobile">
+                        <span class="nav-icon">📱</span>
+                        Application mobile
+                    </a>
+                    <a href="#" class="nav-link" data-section="partnerships">
+                        <span class="nav-icon">🤝</span>
+                        Partenariats
+                    </a>
+                    <a href="#" class="nav-link active" data-section="monitoring">
+                        <span class="nav-icon">📸</span>
+                        Suivi & Anomalies
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Contenu Principal -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1 class="page-title">Suivi & Anomalies</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="showAddUserModal()">+ Ajouter utilisateur</button>
+                    <button class="btn btn-logout" onclick="handleLogout()">Déconnexion</button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Section Utilisateurs -->
+                <div id="users-section" class="content-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">15</div>
+                            <div class="stat-label">Utilisateurs actifs</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Gestionnaires</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">7</div>
+                            <div class="stat-label">Conducteurs</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">Personnel technique</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">
+                            Équipe Transport Dubois
+                            <button class="btn btn-primary btn-small" onclick="showAddUserModal()">+ Ajouter</button>
+                        </div>
+                        
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Email</th>
+                                    <th>Rôle</th>
+                                    <th>Dépôt attitré</th>
+                                    <th>Dernière connexion</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Marie Dubois</strong></td>
+                                    <td>marie@transport-dubois.fr</td>
+                                    <td><span class="badge badge-green">Gestionnaire</span></td>
+                                    <td>Siège Social</td>
+                                    <td>Aujourd'hui, 14:30</td>
+                                    <td><span class="badge badge-active">Actif</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Pierre Martin</strong></td>
+                                    <td>p.martin@transport-dubois.fr</td>
+                                    <td><span class="badge badge-green">Gestionnaire de flotte</span></td>
+                                    <td>Dépôt Lyon</td>
+                                    <td>Hier, 18:45</td>
+                                    <td><span class="badge badge-active">Actif</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Jean Dupont</strong></td>
+                                    <td>j.dupont@transport-dubois.fr</td>
+                                    <td><span class="badge badge-yellow">Conducteur</span></td>
+                                    <td>Dépôt Saint-Étienne</td>
+                                    <td>Aujourd'hui, 12:15</td>
+                                    <td><span class="badge badge-active">Actif</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Sophie Moreau</strong></td>
+                                    <td>s.moreau@transport-dubois.fr</td>
+                                    <td><span class="badge badge-orange">Chef d'atelier</span></td>
+                                    <td>Atelier Central</td>
+                                    <td>Aujourd'hui, 16:20</td>
+                                    <td><span class="badge badge-active">Actif</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Léa Mécanique</strong></td>
+                                    <td>l.mecanique@transport-dubois.fr</td>
+                                    <td><span class="badge badge-purple">Mécanicienne</span></td>
+                                    <td>Atelier Central</td>
+                                    <td>Aujourd'hui, 15:45</td>
+                                    <td><span class="badge badge-active">Actif</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Thomas Froid</strong></td>
+                                    <td>t.froid@transport-dubois.fr</td>
+                                    <td><span class="badge badge-blue">Frigorifique</span></td>
+                                    <td>Dépôt Lyon</td>
+                                    <td>Hier, 17:30</td>
+                                    <td><span class="badge badge-active">Actif</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Michel Pneu</strong></td>
+                                    <td>m.pneu@transport-dubois.fr</td>
+                                    <td><span class="badge badge-gray">Pneumatique</span></td>
+                                    <td>Parc mobile</td>
+                                    <td>Aujourd'hui, 11:20</td>
+                                    <td><span class="badge badge-active">Actif</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section Matériel -->
+                <div id="vehicles-section" class="content-section">
+                    <div class="stats-grid">
+                        <div class="stat-card success">
+                            <div class="stat-number">78</div>
+                            <div class="stat-label">Matériels au total</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">72</div>
+                            <div class="stat-label">Disponibles</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-number">6</div>
+                            <div class="stat-label">En maintenance</div>
+                        </div>
+                        <div class="stat-card" style="border-left-color: var(--red);">
+                            <div class="stat-number" style="color: var(--red);">12</div>
+                            <div class="stat-label">Échéances < 30 jours</div>
+                        </div>
+                        <div class="stat-card" style="border-left-color: var(--purple);">
+                            <div class="stat-number" style="color: var(--purple);">18</div>
+                            <div class="stat-label">Équipés ADR</div>
+                        </div>
+                        <div class="stat-card" style="border-left-color: var(--orange);">
+                            <div class="stat-number" style="color: var(--orange);">35</div>
+                            <div class="stat-label">Avec hayon</div>
+                        </div>
+                        <div class="stat-card" style="border-left-color: var(--green);">
+                            <div class="stat-number" style="color: var(--green);">12</div>
+                            <div class="stat-label">Carburants alternatifs</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">
+                            Enregistrer un nouveau matériel
+                            <span style="font-size: 0.8rem; font-weight: normal; color: var(--gray-600);">
+                                Triple identification : Billun + Interne + Plaque
+                            </span>
+                        </div>
+                        
+                        <div class="notification success" id="vehicle-notification">
+                            ✓ Matériel enregistré avec succès ! QR Code généré automatiquement.
+                        </div>
+                        
+                        <form id="vehicle-form">
+                            <div class="form-grid">
+                                <!-- Informations de base -->
+                                <div class="form-group full-width">
+                                    <h4 style="margin: 0 0 16px 0; color: var(--blue-primary); border-bottom: 2px solid var(--blue-bg); padding-bottom: 8px;">📋 Informations générales</h4>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Identifiant interne *</label>
+                                    <input type="text" class="form-input" name="internalId" required placeholder="T001, CAM-15, BTP-A7...">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Plaque d'immatriculation</label>
+                                    <input type="text" class="form-input" name="plate" placeholder="AB-123-CD (si applicable)">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Nom/Désignation *</label>
+                                    <input type="text" class="form-input" name="name" required placeholder="Ex: Camion Iveco Daily">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Dépôt d'affectation</label>
+                                    <select class="form-select" name="depot">
+                                        <option value="">Choisir un dépôt</option>
+                                        <option value="siege">Siège Social - Saint-Étienne</option>
+                                        <option value="lyon">Dépôt Lyon</option>
+                                        <option value="marseille">Dépôt Marseille</option>
+                                        <option value="atelier-central">Atelier Central</option>
+                                        <option value="parc-mobile">Parc mobile (sans affectation)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Catégorie et type de matériel -->
+                                <div class="form-group full-width">
+                                    <h4 style="margin: 20px 0 16px 0; color: var(--blue-primary); border-bottom: 2px solid var(--blue-bg); padding-bottom: 8px;">🚛 Type de matériel</h4>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Catégorie principale *</label>
+                                    <select class="form-select" name="category" required onchange="updateTypeOptions(this)">
+                                        <option value="">Sélectionner une catégorie</option>
+                                        <option value="vehicule">🚛 Véhicules</option>
+                                        <option value="remorque">🏗️ Remorques</option>
+                                        <option value="manutention">🏭 Manutention</option>
+                                        <option value="autre">➕ Autre matériel</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Type spécifique *</label>
+                                    <select class="form-select" name="type" required id="typeSelect">
+                                        <option value="">Choisir d'abord une catégorie</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Marque</label>
+                                    <input type="text" class="form-input" name="brand" placeholder="Iveco, Renault, Caterpillar...">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Modèle</label>
+                                    <input type="text" class="form-input" name="model" placeholder="Daily, Master, 950GC...">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Année mise en service</label>
+                                    <input type="number" class="form-input" name="year" placeholder="2020" min="1990" max="2025">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Type de carburant</label>
+                                    <select class="form-select" name="fuel" onchange="toggleOtherFuel(this)">
+                                        <option value="">Sélectionner un carburant</option>
+                                        <option value="diesel">Diesel</option>
+                                        <option value="essence">Essence</option>
+                                        <option value="gpl">GPL (Gaz de Pétrole Liquéfié)</option>
+                                        <option value="gnv">GNV (Gaz Naturel Véhicule)</option>
+                                        <option value="gnl">GNL (Gaz Naturel Liquéfié)</option>
+                                        <option value="electrique">Électrique</option>
+                                        <option value="hybride">Hybride diesel</option>
+                                        <option value="hybride_essence">Hybride essence</option>
+                                        <option value="hydrogene">Hydrogène</option>
+                                        <option value="biocarburant">Biocarburant/Biodiesel</option>
+                                        <option value="e85">E85 (Superéthanol)</option>
+                                        <option value="adblue">Diesel + AdBlue</option>
+                                        <option value="autre">Autre (préciser)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="otherFuelGroup" style="display: none;">
+                                    <label class="form-label">Préciser le carburant</label>
+                                    <input type="text" class="form-input" name="otherFuel" placeholder="Ex: Diesel B30, Carburant aviation, Méthane...">
+                                    <small style="color: var(--gray-600); font-size: 0.75rem;">Pour carburants spécialisés ou mélanges spécifiques</small>
+                                </div>
+
+                                <!-- Informations techniques et suivi -->
+                                <div class="form-group full-width">
+                                    <h4 style="margin: 20px 0 16px 0; color: var(--blue-primary); border-bottom: 2px solid var(--blue-bg); padding-bottom: 8px;">🔧 Données techniques et suivi</h4>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Kilométrage/Heures actuels</label>
+                                    <input type="number" class="form-input" name="mileage" placeholder="150000" min="0">
+                                    <small style="color: var(--gray-600); font-size: 0.75rem;">En km (ou heures pour les engins)</small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Poids à vide (kg)</label>
+                                    <input type="number" class="form-input" name="emptyWeight" placeholder="3500" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Date prochain contrôle technique</label>
+                                    <input type="date" class="form-input" name="nextTechnicalControl">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Date prochain entretien</label>
+                                    <input type="date" class="form-input" name="nextMaintenance">
+                                </div>
+
+                                <!-- Mensurations -->
+                                <div class="form-group full-width">
+                                    <h4 style="margin: 20px 0 16px 0; color: var(--blue-primary); border-bottom: 2px solid var(--blue-bg); padding-bottom: 8px;">📏 Mensurations</h4>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Longueur (m)</label>
+                                    <input type="number" class="form-input" name="length" placeholder="6.2" step="0.1" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Largeur (m)</label>
+                                    <input type="number" class="form-input" name="width" placeholder="2.5" step="0.1" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Hauteur (m)</label>
+                                    <input type="number" class="form-input" name="height" placeholder="2.8" step="0.1" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Volume utile (m³)</label>
+                                    <input type="number" class="form-input" name="volume" placeholder="20" step="0.1" min="0">
+                                </div>
+
+                                <!-- Équipements et options ADR -->
+                                <div class="form-group full-width">
+                                    <h4 style="margin: 20px 0 16px 0; color: var(--blue-primary); border-bottom: 2px solid var(--blue-bg); padding-bottom: 8px;">⚠️ Transport ADR et équipements</h4>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <input type="checkbox" name="adrPlate" style="margin-right: 8px;">
+                                        Plaque ADR (matières dangereuses)
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <input type="checkbox" name="adrKit" style="margin-right: 8px;">
+                                        Valise ADR (équipements de sécurité)
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <input type="checkbox" name="hayon" style="margin-right: 8px;">
+                                        Hayon élévateur
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Date prochain entretien hayon</label>
+                                    <input type="date" class="form-input" name="nextHayonMaintenance">
+                                    <small style="color: var(--gray-600); font-size: 0.75rem;">Obligatoire si hayon présent</small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <input type="checkbox" name="hayonCable" style="margin-right: 8px;">
+                                        Câble de sécurité hayon
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <input type="checkbox" name="slidingDoor" style="margin-right: 8px;">
+                                        Porte coulissante
+                                    </label>
+                                </div>
+                                
+                                <div class="form-group full-width">
+                                    <button type="submit" class="btn btn-primary" style="margin-top: 24px; padding: 12px 24px;">
+                                        📝 Enregistrer le matériel complet
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-title">Flotte Transport Dubois (78 matériels)</div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Interne</th>
+                                    <th>Matériel</th>
+                                    <th>Type/Équipements</th>
+                                    <th>Dépôt/Affectation</th>
+                                    <th>Kilométrage</th>
+                                    <th>Prochaines échéances</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>T001</strong></td>
+                                    <td>
+                                        🚚 Camion Iveco Daily<br>
+                                        <small>AB-123-CD | ID Billun: BLN-2024-001234</small><br>
+                                        <small style="color: var(--gray-600);">L: 6.2m | l: 2.5m | h: 2.8m | Diesel + AdBlue</small>
+                                    </td>
+                                    <td>
+                                        Camion<br>
+                                        <small style="color: var(--green);">✓ Hayon ✓ ADR</small>
+                                    </td>
+                                    <td>Dépôt Saint-Étienne</td>
+                                    <td>
+                                        <strong>145,680 km</strong><br>
+                                        <small>Poids: 3.5T</small>
+                                    </td>
+                                    <td>
+                                        <small style="color: var(--green);">CT: 15/03/2026</small><br>
+                                        <small style="color: var(--yellow);">Entretien: 28/08/2025</small><br>
+                                        <small style="color: var(--orange);">Hayon: 15/08/2025</small>
+                                    </td>
+                                    <td><span class="badge badge-green">Disponible</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TRR-05</strong></td>
+                                    <td>
+                                        🚜 Tracteur Renault T High<br>
+                                        <small>RT-789-TR | ID Billun: BLN-2024-001245</small><br>
+                                        <small style="color: var(--gray-600);">Tracteur 44T | Diesel + AdBlue</small>
+                                    </td>
+                                    <td>
+                                        Tracteur routier<br>
+                                        <small style="color: var(--red);">⚠️ ADR ✓ Semi-remorque</small>
+                                    </td>
+                                    <td>Dépôt Lyon</td>
+                                    <td>
+                                        <strong>487,320 km</strong><br>
+                                        <small>Poids: 7.8T</small>
+                                    </td>
+                                    <td>
+                                        <small style="color: var(--green);">CT: 22/11/2025</small><br>
+                                        <small style="color: var(--green);">Entretien: 05/09/2025</small>
+                                    </td>
+                                    <td><span class="badge badge-green">Disponible</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>RMQ-B12</strong></td>
+                                    <td>
+                                        🎪 Remorque bâche STAS<br>
+                                        <small>RM-456-BC | ID Billun: BLN-2024-001246</small><br>
+                                        <small style="color: var(--gray-600);">L: 13.6m | Volume: 86m³</small>
+                                    </td>
+                                    <td>
+                                        Remorque bâche<br>
+                                        <small style="color: var(--blue-primary);">✓ Rideau coulissant</small>
+                                    </td>
+                                    <td>Dépôt Lyon</td>
+                                    <td>
+                                        <strong>298,450 km</strong><br>
+                                        <small>Poids: 6.8T</small>
+                                    </td>
+                                    <td>
+                                        <small style="color: var(--green);">CT: 15/04/2026</small><br>
+                                        <small style="color: var(--green);">Entretien: 12/10/2025</small>
+                                    </td>
+                                    <td><span class="badge badge-green">Disponible</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>FRG-03</strong></td>
+                                    <td>
+                                        ❄️ Remorque frigo Chereau<br>
+                                        <small>FR-321-GO | ID Billun: BLN-2024-001247</small><br>
+                                        <small style="color: var(--gray-600);">L: 13.6m | Volume: 76m³ | -25°C/+25°C</small>
+                                    </td>
+                                    <td>
+                                        Remorque frigorifique<br>
+                                        <small style="color: var(--blue-primary);">❄️ Multi-température ✓ Groupe froid</small>
+                                    </td>
+                                    <td>Dépôt Marseille</td>
+                                    <td>
+                                        <strong>356,890 km</strong><br>
+                                        <small>Poids: 8.2T</small>
+                                    </td>
+                                    <td>
+                                        <small style="color: var(--yellow);">CT: 28/08/2025</small><br>
+                                        <small style="color: var(--orange);">Entretien: 22/07/2025</small><br>
+                                        <small style="color: var(--red);">Groupe froid: 15/07/2025 ⚠️</small>
+                                    </td>
+                                    <td><span class="badge badge-orange">Maintenance</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>CIT-07</strong></td>
+                                    <td>
+                                        🛢️ Citerne alimentaire INOX<br>
+                                        <small>CT-654-AL | ID Billun: BLN-2024-001248</small><br>
+                                        <small style="color: var(--gray-600);">Capacité: 28 000L | INOX 316L</small>
+                                    </td>
+                                    <td>
+                                        Citerne alimentaire<br>
+                                        <small style="color: var(--red);">⚠️ ADR ✓ Pompe ✓ Nettoyage NEP</small>
+                                    </td>
+                                    <td>Dépôt Lyon</td>
+                                    <td>
+                                        <strong>187,560 km</strong><br>
+                                        <small>Poids: 12.5T</small>
+                                    </td>
+                                    <td>
+                                        <small style="color: var(--green);">CT: 10/02/2026</small><br>
+                                        <small style="color: var(--green);">Entretien: 18/09/2025</small><br>
+                                        <small style="color: var(--yellow);">Contrôle étanchéité: 05/08/2025</small>
+                                    </td>
+                                    <td><span class="badge badge-green">Disponible</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>BEN-15</strong></td>
+                                    <td>
+                                        🏗️ Benne TP Marrel<br>
+                                        <small>BN-987-TP | ID Billun: BLN-2024-001249</small><br>
+                                        <small style="color: var(--gray-600);">L: 7.2m | Volume: 18m³ | Acier haute résistance</small>
+                                    </td>
+                                    <td>
+                                        Benne TP<br>
+                                        <small style="color: var(--orange);">🏗️ Basculante hydraulique ✓ Ridelles</small>
+                                    </td>
+                                    <td>Parc mobile</td>
+                                    <td>
+                                        <strong>234,120 km</strong><br>
+                                        <small>Poids: 9.8T</small>
+                                    </td>
+                                    <td>
+                                        <small style="color: var(--green);">CT: 05/06/2026</small><br>
+                                        <small style="color: var(--green);">Entretien: 25/08/2025</small><br>
+                                        <small style="color: var(--yellow);">Vérification hydraulique: 30/07/2025</small>
+                                    </td>
+                                    <td><span class="badge badge-green">Disponible</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>MAN-E01</strong></td>
+                                    <td>
+                                        🏗️ Chariot élévateur Toyota<br>
+                                        <small>Pas de plaque | ID Billun: BLN-2024-001250</small><br>
+                                        <small style="color: var(--gray-600);">Capacité: 2.5T | Hauteur: 4.5m | GPL</small>
+                                    </td>
+                                    <td>
+                                        Chariot élévateur<br>
+                                        <small style="color: var(--yellow);">⚡ Fourches ✓ Nacelle optionnelle</small>
+                                    </td>
+                                    <td>Atelier Central</td>
+                                    <td>
+                                        <strong>1,847 h</strong><br>
+                                        <small>Poids: 3.2T</small>
+                                    </td>
+                                    <td>
+                                        <small style="color: var(--green);">CT: 22/03/2026</small><br>
+                                        <small style="color: var(--green);">Entretien: 15/08/2025</small><br>
+                                        <small style="color: var(--green);">Vérification CACES: 10/12/2025</small>
+                                    </td>
+                                    <td><span class="badge badge-green">Disponible</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TPE-04</strong></td>
+                                    <td>
+                                        ⚡ Transpalette électrique Jungheinrich<br>
+                                        <small>Pas de plaque | ID Billun: BLN-2024-001251</small><br>
+                                        <small style="color: var(--gray-600);">Capacité: 1.5T | Batterie lithium | Électrique</small>
+                                    </td>
+                                    <td>
+                                        Transpalette électrique<br>
+                                        <small style="color: var(--green);">⚡ 100% Électrique 🔋 Li-ion</small>
+                                    </td>
+                                    <td>Dépôt Saint-Étienne</td>
+                                    <td>
+                                        <strong>456 h</strong><br>
+                                        <small>Poids: 850kg</small>
+                                    </td>
+                                    <td>
+                                        <small style="color: var(--green);">CT: 18/06/2026</small><br>
+                                        <small style="color: var(--green);">Entretien: 12/10/2025</small><br>
+                                        <small style="color: var(--green);">Batterie: 25/11/2025</small>
+                                    </td>
+                                    <td><span class="badge badge-green">Disponible</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>VAN-E03</strong></td>
+                                    <td>
+                                        🚐 Camionnette Nissan e-NV200<br>
+                                        <small>EV-201-EC | ID Billun: BLN-2024-001252</small><br>
+                                        <small style="color: var(--gray-600);">L: 4.6m | Volume: 4.2m³ | Électrique</small>
+                                    </td>
+                                    <td>
+                                        Camionnette<br>
+                                        <small style="color: var(--green);">⚡ 100% Électrique 🌱 Zéro émission</small>
+                                    </td>
+                                    <td>Siège Social</td>
+                                    <td>
+                                        <strong>23,156 km</strong><br>
+                                        <small>Poids: 1.8T</small>
+                                    </td>
+                                    <td>
+                                        <small style="color: var(--green);">CT: 18/06/2026</small><br>
+                                        <small style="color: var(--green);">Entretien: 12/10/2025</small><br>
+                                        <small style="color: var(--green);">Batterie: 15/12/2026</small>
+                                    </td>
+                                    <td><span class="badge badge-green">Disponible</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TRAIN-01</strong></td>
+                                    <td>
+                                        🚂 Train routier Volvo FH16<br>
+                                        <small>TR-555-LG | ID Billun: BLN-2024-001253</small><br>
+                                        <small style="color: var(--gray-600);">Tracteur + Remorque + Dolly | 25.25m</small>
+                                    </td>
+                                    <td>
+                                        Train routier<br>
+                                        <small style="color: var(--purple);">🚂 Configuration train ✓ ADR ✓ Bâchés</small>
+                                    </td>
+                                    <td>Dépôt Lyon</td>
+                                    <td>
+                                        <strong>612,890 km</strong><br>
+                                        <small>Poids: 18.5T</small>
+                                    </td>
+                                    <td>
+                                        <small style="color: var(--yellow);">CT: 15/08/2025</small><br>
+                                        <small style="color: var(--orange);">Entretien: 25/07/2025</small><br>
+                                        <small style="color: var(--red);">Dolly: 20/07/2025 ⚠️</small>
+                                    </td>
+                                    <td><span class="badge badge-orange">Maintenance</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Modifier</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section Dépôts & Ateliers -->
+                <div id="depots-section" class="content-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">Sites au total</div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Dépôts opérationnels</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">Ateliers spécialisés</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">78</div>
+                            <div class="stat-label">Matériels répartis</div>
+                        </div>
+                    </div>
+
+                    <div class="sub-tabs">
+                        <button class="sub-tab active" onclick="showDepotTab('list')">🏭 Liste des sites</button>
+                        <button class="sub-tab" onclick="showDepotTab('add')">➕ Ajouter un site</button>
+                        <button class="sub-tab" onclick="showDepotTab('assignments')">📋 Affectations</button>
+                    </div>
+
+                    <!-- Liste des dépôts -->
+                    <div id="depot-list" class="card">
+                        <div class="card-title">Sites Transport Dubois</div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nom du site</th>
+                                    <th>Type</th>
+                                    <th>Adresse</th>
+                                    <th>Responsable</th>
+                                    <th>Matériels affectés</th>
+                                    <th>Personnel</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>🏢 Siège Social</strong></td>
+                                    <td><span class="badge badge-green">Siège + Dépôt</span></td>
+                                    <td>
+                                        15 rue des Transports<br>
+                                        <small>42000 Saint-Étienne</small>
+                                    </td>
+                                    <td>
+                                        <strong>Marie Dubois</strong><br>
+                                        <small>Directrice générale</small>
+                                    </td>
+                                    <td>
+                                        <strong>18</strong> matériels<br>
+                                        <small>12 véhicules, 4 remorques, 2 manutention</small>
+                                    </td>
+                                    <td>
+                                        <strong>6</strong> personnes<br>
+                                        <small>2 gestionnaires, 3 conducteurs, 1 admin</small>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Gérer</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>🏭 Dépôt Lyon</strong></td>
+                                    <td><span class="badge badge-yellow">Dépôt</span></td>
+                                    <td>
+                                        Zone industrielle Corbas<br>
+                                        <small>69960 Corbas</small>
+                                    </td>
+                                    <td>
+                                        <strong>Pierre Martin</strong><br>
+                                        <small>Responsable dépôt</small>
+                                    </td>
+                                    <td>
+                                        <strong>32</strong> matériels<br>
+                                        <small>15 véhicules, 12 remorques, 5 tracteurs routiers</small>
+                                    </td>
+                                    <td>
+                                        <strong>8</strong> personnes<br>
+                                        <small>1 gestionnaire, 6 conducteurs, 1 frigoriste</small>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Gérer</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>🏭 Dépôt Marseille</strong></td>
+                                    <td><span class="badge badge-yellow">Dépôt</span></td>
+                                    <td>
+                                        Port autonome de Marseille<br>
+                                        <small>13016 Marseille</small>
+                                    </td>
+                                    <td>
+                                        <strong>À affecter</strong><br>
+                                        <small style="color: var(--orange);">Recherche en cours</small>
+                                    </td>
+                                    <td>
+                                        <strong>15</strong> matériels<br>
+                                        <small>8 véhicules, 5 remorques, 2 citernes</small>
+                                    </td>
+                                    <td>
+                                        <strong>4</strong> personnes<br>
+                                        <small>4 conducteurs (gestion externe)</small>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-warning btn-small">Recruter responsable</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>🔧 Atelier Central</strong></td>
+                                    <td><span class="badge badge-orange">Atelier</span></td>
+                                    <td>
+                                        ZI des Granges<br>
+                                        <small>42230 Roche-la-Molière</small>
+                                    </td>
+                                    <td>
+                                        <strong>Sophie Moreau</strong><br>
+                                        <small>Chef atelier</small>
+                                    </td>
+                                    <td>
+                                        <strong>8</strong> matériels<br>
+                                        <small>5 chariots élévateurs, 3 transpalettes</small>
+                                    </td>
+                                    <td>
+                                        <strong>3</strong> personnes<br>
+                                        <small>1 chef atelier, 2 mécaniciennes</small>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Gérer</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>🔧 Atelier Mobile</strong></td>
+                                    <td><span class="badge badge-orange">Atelier itinérant</span></td>
+                                    <td>
+                                        Interventions sur sites<br>
+                                        <small>Région Auvergne-Rhône-Alpes</small>
+                                    </td>
+                                    <td>
+                                        <strong>Laurent Dépannage</strong><br>
+                                        <small>Technicien itinérant</small>
+                                    </td>
+                                    <td>
+                                        <strong>5</strong> matériels<br>
+                                        <small>2 camions atelier, 3 véhicules légers</small>
+                                    </td>
+                                    <td>
+                                        <strong>2</strong> personnes<br>
+                                        <small>2 techniciens itinérants</small>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Planning</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Formulaire d'ajout de site -->
+                    <div id="depot-add" class="card" style="display: none;">
+                        <div class="card-title">Créer un nouveau site</div>
+                        
+                        <div class="notification success" id="depot-notification">
+                            ✓ Site créé avec succès !
+                        </div>
+                        
+                        <form id="depot-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Nom du site *</label>
+                                    <input type="text" class="form-input" name="depotName" required placeholder="Ex: Dépôt Grenoble">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Type de site *</label>
+                                    <select class="form-select" name="depotType" required>
+                                        <option value="">Sélectionner un type</option>
+                                        <option value="depot">🏭 Dépôt logistique</option>
+                                        <option value="atelier">🔧 Atelier de maintenance</option>
+                                        <option value="siege">🏢 Siège social</option>
+                                        <option value="mixte">🏭🔧 Site mixte (dépôt + atelier)</option>
+                                        <option value="parking">🅿️ Parking sécurisé</option>
+                                    </select>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label class="form-label">Adresse complète *</label>
+                                    <textarea class="form-input" name="address" required rows="3" placeholder="Adresse, code postal, ville"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Responsable du site</label>
+                                    <select class="form-select" name="manager">
+                                        <option value="">À affecter plus tard</option>
+                                        <option value="marie">Marie Dubois</option>
+                                        <option value="pierre">Pierre Martin</option>
+                                        <option value="sophie">Sophie Moreau</option>
+                                        <option value="nouveau">➕ Nouveau collaborateur</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Capacité d'accueil</label>
+                                    <input type="number" class="form-input" name="capacity" placeholder="Nombre de matériels" min="1">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label class="form-label">Équipements disponibles</label>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+                                        <label><input type="checkbox" name="equipment" value="pont"> Pont élévateur</label>
+                                        <label><input type="checkbox" name="equipment" value="fosse"> Fosse de visite</label>
+                                        <label><input type="checkbox" name="equipment" value="lavage"> Station de lavage</label>
+                                        <label><input type="checkbox" name="equipment" value="carburant"> Distributeur carburant</label>
+                                        <label><input type="checkbox" name="equipment" value="outillage"> Outillage spécialisé</label>
+                                        <label><input type="checkbox" name="equipment" value="pieces"> Stock pièces détachées</label>
+                                        <label><input type="checkbox" name="equipment" value="bureau"> Bureaux administratifs</label>
+                                        <label><input type="checkbox" name="equipment" value="vestiaires"> Vestiaires</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group full-width">
+                                    <button type="submit" class="btn btn-primary" style="margin-top: 16px;">
+                                        🏭 Créer le site
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Gestion des affectations -->
+                    <div id="depot-assignments" class="card" style="display: none;">
+                        <div class="card-title">Gestion des affectations</div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                            <div>
+                                <h4 style="margin-bottom: 16px; color: var(--blue-primary);">🚛 Affecter du matériel</h4>
+                                <div class="form-grid" style="grid-template-columns: 1fr;">
+                                    <div class="form-group">
+                                        <label class="form-label">Matériel à affecter</label>
+                                        <select class="form-select">
+                                            <option value="">Sélectionner un matériel</option>
+                                            <option value="T001">T001 - Camion Iveco Daily</option>
+                                            <option value="TRR-05">TRR-05 - Tracteur Renault T High</option>
+                                            <option value="VAN-E03">VAN-E03 - Camionnette Nissan e-NV200</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Nouveau site d'affectation</label>
+                                        <select class="form-select">
+                                            <option value="">Choisir un site</option>
+                                            <option value="siege">Siège Social - Saint-Étienne</option>
+                                            <option value="lyon">Dépôt Lyon</option>
+                                            <option value="marseille">Dépôt Marseille</option>
+                                            <option value="atelier">Atelier Central</option>
+                                            <option value="mobile">Parc mobile</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-primary">Effectuer l'affectation</button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 style="margin-bottom: 16px; color: var(--blue-primary);">👥 Affecter du personnel</h4>
+                                <div class="form-grid" style="grid-template-columns: 1fr;">
+                                    <div class="form-group">
+                                        <label class="form-label">Collaborateur à affecter</label>
+                                        <select class="form-select">
+                                            <option value="">Sélectionner une personne</option>
+                                            <option value="jean">Jean Dupont - Conducteur</option>
+                                            <option value="sophie">Sophie Moreau - Chef d'atelier</option>
+                                            <option value="lea">Léa Mécanique - Mécanicienne</option>
+                                            <option value="nouveau">➕ Nouveau collaborateur</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Site d'affectation</label>
+                                        <select class="form-select">
+                                            <option value="">Choisir un site</option>
+                                            <option value="siege">Siège Social - Saint-Étienne</option>
+                                            <option value="lyon">Dépôt Lyon</option>
+                                            <option value="marseille">Dépôt Marseille</option>
+                                            <option value="atelier">Atelier Central</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-primary">Effectuer l'affectation</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 30px;">
+                            <h4 style="margin-bottom: 16px; color: var(--blue-primary);">📊 Répartition actuelle</h4>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-number">18</div>
+                                    <div class="stat-label">Siège Social</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">32</div>
+                                    <div class="stat-label">Dépôt Lyon</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">15</div>
+                                    <div class="stat-label">Dépôt Marseille</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">8</div>
+                                    <div class="stat-label">Atelier Central</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">5</div>
+                                    <div class="stat-label">Parc mobile</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Application Mobile -->
+                <div id="mobile-section" class="content-section">
+                    <div class="card">
+                        <div class="card-title">Application Billun Conducteur</div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px; align-items: start;">
+                            <div style="text-align: center;">
+                                <div style="width: 120px; height: 120px; background: var(--blue-primary); border-radius: 20px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 48px;">
+                                    📱
+                                </div>
+                                <h3 style="color: var(--blue-primary); margin-bottom: 16px;">Billun Mobile</h3>
+                                <p style="color: var(--gray-600); font-size: 0.9rem; margin-bottom: 20px;">
+                                    Application Android pour vos conducteurs et techniciens
+                                </p>
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    <button class="btn btn-primary" onclick="downloadAPK()">
+                                        📥 Télécharger APK
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="sendDownloadLinks()">
+                                        ✉️ Envoyer par email
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 style="color: var(--gray-800); margin-bottom: 16px;">Fonctionnalités principales :</h4>
+                                <ul style="color: var(--gray-600); line-height: 1.8; margin-bottom: 20px;">
+                                    <li><strong>✅ Identification flexible :</strong> QR Code, ID interne, ou plaque d'immatriculation</li>
+                                    <li><strong>📸 Photos obligatoires :</strong> Minimum 4 photos par prise en charge</li>
+                                    <li><strong>🔍 Signalement d'anomalies :</strong> Système de codes couleur (🟢🟡🟠🔴)</li>
+                                    <li><strong>📍 Géolocalisation :</strong> Enregistrement automatique du lieu</li>
+                                    <li><strong>🔄 Mode hors-ligne :</strong> Synchronisation différée</li>
+                                    <li><strong>🤝 Partenariats :</strong> Accès au matériel des entreprises partenaires</li>
+                                </ul>
+                                
+                                <h4 style="color: var(--gray-800); margin-bottom: 12px;">Installation :</h4>
+                                <ol style="color: var(--gray-600); line-height: 1.6; font-size: 0.9rem;">
+                                    <li>Télécharger le fichier APK depuis le bouton ci-contre</li>
+                                    <li>Autoriser l'installation d'applications tierces sur Android</li>
+                                    <li>Installer l'application et se connecter avec les identifiants Billun</li>
+                                    <li>Autoriser l'accès à la caméra et à la géolocalisation</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-title">Utilisateurs de l'application</div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Utilisateur</th>
+                                    <th>Rôle</th>
+                                    <th>Dernière utilisation</th>
+                                    <th>Photos prises</th>
+                                    <th>Version app</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Jean Dupont</strong></td>
+                                    <td><span class="badge badge-yellow">Conducteur</span></td>
+                                    <td>Aujourd'hui, 12:15</td>
+                                    <td>8 photos (2 véhicules)</td>
+                                    <td>v1.2.1</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Sophie Moreau</strong></td>
+                                    <td><span class="badge badge-orange">Chef d'atelier</span></td>
+                                    <td>Aujourd'hui, 16:20</td>
+                                    <td>12 photos (intervention)</td>
+                                    <td>v1.2.1</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Marie Dubois</strong></td>
+                                    <td><span class="badge badge-green">Gestionnaire</span></td>
+                                    <td>Hier, 18:45</td>
+                                    <td>4 photos (contrôle)</td>
+                                    <td>v1.2.1</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Léa Mécanique</strong></td>
+                                    <td><span class="badge badge-purple">Mécanicienne</span></td>
+                                    <td>Aujourd'hui, 14:30</td>
+                                    <td>6 photos (maintenance)</td>
+                                    <td>v1.2.1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section Partenariats -->
+                <div id="partnerships-section" class="content-section">
+                    <div class="stats-grid">
+                        <div class="stat-card success">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Partenariats actifs</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">Invitations en attente</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">124</div>
+                            <div class="stat-label">Matériels partagés</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">18</div>
+                            <div class="stat-label">Signalements reçus</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">
+                            Inviter une entreprise
+                            <span style="font-size: 0.8rem; font-weight: normal; color: var(--gray-600);">
+                                Partenariat bidirectionnel automatique
+                            </span>
+                        </div>
+                        
+                        <div class="notification success" id="invitation-notification">
+                            ✓ Invitation envoyée avec succès !
+                        </div>
+                        
+                        <form id="invitation-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Nom de l'entreprise *</label>
+                                    <input type="text" class="form-input" name="companyName" required placeholder="Logistique Express">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Email de contact *</label>
+                                    <input type="email" class="form-input" name="contactEmail" required placeholder="contact@logistique-express.fr">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Nom du contact</label>
+                                    <input type="text" class="form-input" name="contactName" placeholder="Jean Martin">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">SIRET (si connu)</label>
+                                    <input type="text" class="form-input" name="siret" placeholder="12345678901234">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label class="form-label">Message personnalisé</label>
+                                    <textarea class="form-input" name="message" rows="3" placeholder="Bonjour, nous souhaiterions établir un partenariat Billun avec votre entreprise pour partager le suivi de nos matériels..."></textarea>
+                                </div>
+                                
+                                <div class="form-group full-width">
+                                    <button type="submit" class="btn btn-primary" style="margin-top: 16px;">
+                                        Envoyer l'invitation
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-title">Partenariats existants</div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Entreprise partenaire</th>
+                                    <th>Statut</th>
+                                    <th>Date de partenariat</th>
+                                    <th>Matériels accessibles</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <strong>Logistique Martin</strong><br>
+                                        <small>j.martin@logistique-martin.com</small>
+                                    </td>
+                                    <td><span class="badge badge-active">Actif</span></td>
+                                    <td>10/07/2025</td>
+                                    <td>32 véhicules</td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Gérer</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>BTP Construction</strong><br>
+                                        <small>s.leger@btp-construction.fr</small>
+                                    </td>
+                                    <td><span class="badge badge-active">Actif</span></td>
+                                    <td>15/07/2025</td>
+                                    <td>28 engins</td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Gérer</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Livraison Express</strong><br>
+                                        <small>contact@livraison-express.com</small>
+                                    </td>
+                                    <td><span class="badge badge-pending">En attente</span></td>
+                                    <td>18/07/2025</td>
+                                    <td>-</td>
+                                    <td>
+                                        <button class="btn btn-warning btn-small">Relancer</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section Suivi & Anomalies AVEC GALERIE PHOTOS ET POSITION GPS -->
+                <div id="monitoring-section" class="content-section active">
+                    <div class="stats-grid">
+                        <div class="stat-card success">
+                            <div class="stat-number">234</div>
+                            <div class="stat-label">Photos prises ce mois</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">8</div>
+                            <div class="stat-label">Anomalies détectées</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Interventions programmées</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">98.2%</div>
+                            <div class="stat-label">Taux de conformité</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Anomalies en cours de traitement</div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Matériel</th>
+                                    <th>Anomalie</th>
+                                    <th>Criticité</th>
+                                    <th>Signalé par</th>
+                                    <th>Date & Position</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <strong>VAN-E03 - Nissan e-NV200</strong><br>
+                                        <small>Plaque: EV-201-EC</small>
+                                    </td>
+                                    <td>Pneu avant droit : usure importante</td>
+                                    <td><span class="badge badge-yellow">🟡 Mineur</span></td>
+                                    <td>Jean Dupont</td>
+                                    <td>
+                                        <div class="location-info">
+                                            <strong>Hier, 17:15</strong><br>
+                                            <small>Chantier Lyon</small><br>
+                                            <span class="gps-coordinates">45.7640°N, 4.8357°E</span><br>
+                                            <a href="https://maps.google.com/?q=45.7640,4.8357" target="_blank" class="location-link">📍 Voir sur carte</a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary btn-small" onclick="viewAnomalyDetails('anomaly_1')">📸 Voir photos</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>FRG-03 - Remorque frigo</strong><br>
+                                        <small>Plaque: FR-321-GO</small>
+                                    </td>
+                                    <td>Groupe frigorifique : défaut température</td>
+                                    <td><span class="badge badge-orange">🟠 Important</span></td>
+                                    <td>Sophie Moreau</td>
+                                    <td>
+                                        <div class="location-info">
+                                            <strong>16/07/2025, 14:45</strong><br>
+                                            <small>Atelier maintenance</small><br>
+                                            <span class="gps-coordinates">45.4215°N, 4.3247°E</span><br>
+                                            <a href="https://maps.google.com/?q=45.4215,4.3247" target="_blank" class="location-link">📍 Voir sur carte</a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary btn-small" onclick="viewAnomalyDetails('anomaly_2')">📸 Voir photos</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>T008 - Iveco Stralis</strong><br>
+                                        <small>Matériel partenaire BTP Construction</small>
+                                    </td>
+                                    <td>Rétroviseur cassé côté passager</td>
+                                    <td><span class="badge badge-yellow">🟡 Mineur</span></td>
+                                    <td>Jean Dupont (partenaire)</td>
+                                    <td>
+                                        <div class="location-info">
+                                            <strong>Aujourd'hui, 09:30</strong><br>
+                                            <small>Chantier BTP</small><br>
+                                            <span class="gps-coordinates">45.7578°N, 4.8320°E</span><br>
+                                            <a href="https://maps.google.com/?q=45.7578,4.8320" target="_blank" class="location-link">📍 Voir sur carte</a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary btn-small" onclick="viewAnomalyDetails('anomaly_3')">📸 Voir photos</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-title">Historique des photos récentes</div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Matériel</th>
+                                    <th>Utilisateur</th>
+                                    <th>Date/Heure</th>
+                                    <th>Nombre de photos</th>
+                                    <th>Localisation & Position</th>
+                                    <th>Résultat</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>T001</strong> - Iveco Daily</td>
+                                    <td>Jean Dupont</td>
+                                    <td>Aujourd'hui, 08:30</td>
+                                    <td>4 photos</td>
+                                    <td>
+                                        <div class="location-info">
+                                            <strong>Dépôt Saint-Étienne</strong><br>
+                                            <span class="gps-coordinates">45.4397°N, 4.3872°E</span><br>
+                                            <a href="https://maps.google.com/?q=45.4397,4.3872" target="_blank" class="location-link">📍 Voir sur carte</a>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-green">🟢 Conforme</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small" onclick="viewPhotoGallery('inspection_1')">📋 Voir inspection</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>VAN-E03</strong> - Nissan e-NV200</td>
+                                    <td>Jean Dupont</td>
+                                    <td>Hier, 17:15</td>
+                                    <td>6 photos</td>
+                                    <td>
+                                        <div class="location-info">
+                                            <strong>Chantier Lyon</strong><br>
+                                            <span class="gps-coordinates">45.7640°N, 4.8357°E</span><br>
+                                            <a href="https://maps.google.com/?q=45.7640,4.8357" target="_blank" class="location-link">📍 Voir sur carte</a>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-yellow">🟡 1 anomalie</span></td>
+                                    <td>
+                                        <button class="btn btn-warning btn-small" onclick="viewPhotoGallery('inspection_2')">⚠️ Voir inspection</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>FRG-03</strong> - Remorque frigo</td>
+                                    <td>Sophie Moreau</td>
+                                    <td>16/07/2025, 14:45</td>
+                                    <td>8 photos</td>
+                                    <td>
+                                        <div class="location-info">
+                                            <strong>Atelier maintenance</strong><br>
+                                            <span class="gps-coordinates">45.4215°N, 4.3247°E</span><br>
+                                            <a href="https://maps.google.com/?q=45.4215,4.3247" target="_blank" class="location-link">📍 Voir sur carte</a>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-orange">🟠 Maintenance requise</span></td>
+                                    <td>
+                                        <button class="btn btn-warning btn-small" onclick="viewPhotoGallery('inspection_3')">🔧 Voir intervention</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TRR-05</strong> - Tracteur Renault</td>
+                                    <td>Thomas Froid</td>
+                                    <td>Aujourd'hui, 11:45</td>
+                                    <td>5 photos</td>
+                                    <td>
+                                        <div class="location-info">
+                                            <strong>Autoroute A6 - Aire de Mâcon</strong><br>
+                                            <span class="gps-coordinates">46.3063°N, 4.8483°E</span><br>
+                                            <a href="https://maps.google.com/?q=46.3063,4.8483" target="_blank" class="location-link">📍 Voir sur carte</a>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-green">🟢 Conforme</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small" onclick="viewPhotoGallery('inspection_4')">📋 Voir inspection</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>MAN-E01</strong> - Chariot élévateur</td>
+                                    <td>Léa Mécanique</td>
+                                    <td>Aujourd'hui, 14:30</td>
+                                    <td>4 photos</td>
+                                    <td>
+                                        <div class="location-info">
+                                            <strong>Atelier Central</strong><br>
+                                            <span class="gps-coordinates">45.4215°N, 4.3247°E</span><br>
+                                            <a href="https://maps.google.com/?q=45.4215,4.3247" target="_blank" class="location-link">📍 Voir sur carte</a>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-green">🟢 Conforme</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small" onclick="viewPhotoGallery('inspection_5')">📋 Voir inspection</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal pour ajouter un utilisateur -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Ajouter un utilisateur</h3>
+                <button class="modal-close" onclick="closeModal('addUserModal')">&times;</button>
+            </div>
+            <form id="addUserForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Nom *</label>
+                        <input type="text" class="form-input" name="lastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Prénom *</label>
+                        <input type="text" class="form-input" name="firstName" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Email *</label>
+                        <input type="email" class="form-input" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Téléphone</label>
+                        <input type="tel" class="form-input" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Rôle *</label>
+                        <select class="form-select" name="role" required>
+                            <option value="">Sélectionner un rôle</option>
+                            <option value="gestionnaire">Gestionnaire</option>
+                            <option value="gestionnaire_flotte">Gestionnaire de flotte</option>
+                            <option value="conducteur">Conducteur</option>
+                            <option value="chef_atelier">Chef d'atelier</option>
+                            <option value="mecanicienne">Mécanicienne</option>
+                            <option value="frigorifique">Spécialiste frigorifique</option>
+                            <option value="pneumatique">Spécialiste pneumatique</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Dépôt d'affectation</label>
+                        <select class="form-select" name="depot">
+                            <option value="">À affecter plus tard</option>
+                            <option value="siege">Siège Social - Saint-Étienne</option>
+                            <option value="lyon">Dépôt Lyon</option>
+                            <option value="marseille">Dépôt Marseille</option>
+                            <option value="atelier">Atelier Central</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 16px;">
+                            Créer l'utilisateur
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de galerie photos -->
+    <div id="photoGalleryModal" class="photo-gallery-modal">
+        <div class="photo-gallery-content">
+            <div class="photo-gallery-header">
+                <h3 class="modal-title" id="galleryTitle">Photos d'inspection</h3>
+                <button class="modal-close" onclick="closePhotoGallery()">&times;</button>
+            </div>
+            
+            <div id="galleryInfo" style="margin-bottom: 20px; padding: 12px; background: var(--gray-50); border-radius: 8px;">
+                <!-- Informations dynamiques de l'inspection -->
+            </div>
+            
+            <div id="photoGalleryGrid" class="photo-gallery-grid">
+                <!-- Photos générées dynamiquement -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox pour voir les photos en grand -->
+    <div id="lightbox" class="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <img id="lightboxImage" src="" alt="Photo en grand">
+    </div>
+
+    <script>
+        // Types de matériel par catégorie
+        const vehicleTypes = {
+            vehicule: [
+                { value: 'camion', text: '🚚 Camion', icon: '🚚' },
+                { value: 'camion_remorque', text: '🚛 Camion remorque', icon: '🚛' },
+                { value: 'tracteur_routier', text: '🚜 Tracteur routier', icon: '🚜' },
+                { value: 'camionnette', text: '🚐 Camionnette', icon: '🚐' },
+                { value: 'voiture', text: '🚗 Voiture', icon: '🚗' },
+                { value: 'utilitaire', text: '🚚 Utilitaire', icon: '🚚' },
+                { value: 'autre_vehicule', text: '➕ Autre véhicule', icon: '🚛' }
+            ],
+            remorque: [
+                { value: 'bache', text: '🎪 Remorque bâche', icon: '🎪' },
+                { value: 'frigo', text: '❄️ Remorque frigorifique', icon: '❄️' },
+                { value: 'fourgon', text: '📦 Remorque fourgon', icon: '📦' },
+                { value: 'citerne', text: '🛢️ Citerne', icon: '🛢️' },
+                { value: 'benne', text: '🏗️ Remorque benne', icon: '🏗️' },
+                { value: 'fond_mouvant', text: '🔄 Fond mouvant', icon: '🔄' },
+                { value: 'plateau', text: '📐 Plateau', icon: '📐' },
+                { value: 'chassis_conteneur', text: '📦 Châssis conteneur', icon: '📦' },
+                { value: 'train', text: '🚂 Train routier', icon: '🚂' },
+                { value: 'autre_remorque', text: '➕ Autre remorque', icon: '🚛' }
+            ],
+            manutention: [
+                { value: 'transpalette', text: '🤖 Transpalette manuel', icon: '🤖' },
+                { value: 'transpalette_electrique', text: '⚡ Transpalette électrique', icon: '⚡' },
+                { value: 'chariot_elevateur', text: '🏗️ Chariot élévateur', icon: '🏗️' },
+                { value: 'grue_mobile', text: '🏗️ Grue mobile', icon: '🏗️' },
+                { value: 'engin_chantier', text: '🏗️ Engin de chantier', icon: '🏗️' },
+                { value: 'autre_manutention', text: '➕ Autre équipement', icon: '🤖' }
+            ],
+            autre: [
+                { value: 'groupe_electrogene', text: '⚡ Groupe électrogène', icon: '⚡' },
+                { value: 'compresseur', text: '💨 Compresseur', icon: '💨' },
+                { value: 'outillage', text: '🔧 Outillage spécialisé', icon: '🔧' },
+                { value: 'autre_materiel', text: '➕ Autre matériel', icon: '🔧' }
+            ]
+        };
+
+        // Données d'exemple pour les inspections et anomalies avec coordonnées GPS
+        const photoData = {
+            inspection_1: {
+                title: "Inspection T001 - Iveco Daily",
+                vehicle: "T001 - Camion Iveco Daily",
+                date: "Aujourd'hui, 08:30",
+                user: "Jean Dupont",
+                location: "Dépôt Saint-Étienne",
+                coordinates: "45.4397°N, 4.3872°E",
+                status: "conforme",
+                photos: [
+                    {
+                        url: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop",
+                        title: "Vue avant gauche",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=400&h=300&fit=crop",
+                        title: "Vue avant droite",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1544829099-b9a0c5303bea?w=400&h=300&fit=crop",
+                        title: "Vue arrière",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1553726618-5f4da6b7e11c?w=400&h=300&fit=crop",
+                        title: "Tableau de bord",
+                        type: "obligatoire",
+                        status: "ok"
+                    }
+                ]
+            },
+            inspection_2: {
+                title: "Inspection VAN-E03 - Nissan e-NV200",
+                vehicle: "VAN-E03 - Camionnette Nissan e-NV200",
+                date: "Hier, 17:15",
+                user: "Jean Dupont",
+                location: "Chantier Lyon",
+                coordinates: "45.7640°N, 4.8357°E",
+                status: "anomalie",
+                photos: [
+                    {
+                        url: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=300&fit=crop",
+                        title: "Vue avant gauche",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=400&h=300&fit=crop",
+                        title: "Vue avant droite",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1606016159991-24bc19d0f0f3?w=400&h=300&fit=crop",
+                        title: "Vue arrière",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&h=300&fit=crop",
+                        title: "Pneu avant droit - USURE",
+                        type: "anomalie",
+                        status: "anomalie",
+                        anomaly: "Usure importante du pneu avant droit"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=300&fit=crop",
+                        title: "Détail usure pneu",
+                        type: "anomalie",
+                        status: "anomalie"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1550006037-278d623b2962?w=400&h=300&fit=crop",
+                        title: "Tableau de bord",
+                        type: "obligatoire",
+                        status: "ok"
+                    }
+                ]
+            },
+            inspection_3: {
+                title: "Intervention FRG-03 - Remorque frigo",
+                vehicle: "FRG-03 - Remorque frigorifique Chereau",
+                date: "16/07/2025, 14:45",
+                user: "Sophie Moreau",
+                location: "Atelier maintenance",
+                coordinates: "45.4215°N, 4.3247°E",
+                status: "maintenance",
+                photos: [
+                    {
+                        url: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=400&h=300&fit=crop",
+                        title: "Vue d'ensemble remorque",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=300&fit=crop",
+                        title: "Groupe frigorifique",
+                        type: "inspection",
+                        status: "maintenance"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1563897024140-8d92e8d8e9ae?w=400&h=300&fit=crop",
+                        title: "Défaut température - Écran",
+                        type: "anomalie",
+                        status: "anomalie",
+                        anomaly: "Défaut température signalé à l'écran"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1554672723-d42a16e533db?w=400&h=300&fit=crop",
+                        title: "Compresseur groupe froid",
+                        type: "maintenance",
+                        status: "maintenance"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400&h=300&fit=crop",
+                        title: "Évaporateur intérieur",
+                        type: "maintenance",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=400&h=300&fit=crop",
+                        title: "Condenseur extérieur",
+                        type: "maintenance",
+                        status: "maintenance"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1563897024140-8d92e8d8e9ae?w=400&h=300&fit=crop",
+                        title: "Pièces à remplacer",
+                        type: "maintenance",
+                        status: "maintenance"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1551632346-8b72891df766?w=400&h=300&fit=crop",
+                        title: "Outils intervention",
+                        type: "maintenance",
+                        status: "ok"
+                    }
+                ]
+            },
+            anomaly_1: {
+                title: "Anomalie VAN-E03 - Pneu usé",
+                vehicle: "VAN-E03 - Nissan e-NV200",
+                date: "Hier, 17:15",
+                user: "Jean Dupont",
+                location: "Chantier Lyon",
+                coordinates: "45.7640°N, 4.8357°E",
+                status: "anomalie",
+                severity: "minor",
+                description: "Pneu avant droit : usure importante détectée lors de l'inspection",
+                photos: [
+                    {
+                        url: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&h=300&fit=crop",
+                        title: "Pneu avant droit - Vue générale",
+                        type: "anomalie",
+                        status: "anomalie",
+                        anomaly: "Usure importante visible"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1614031040793-e6b2ff01893d?w=400&h=300&fit=crop",
+                        title: "Détail usure - Sculpture",
+                        type: "anomalie",
+                        status: "anomalie",
+                        anomaly: "Sculpture insuffisante"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=400&h=300&fit=crop",
+                        title: "Comparaison avec pneu arrière",
+                        type: "comparaison",
+                        status: "ok"
+                    }
+                ]
+            },
+            anomaly_2: {
+                title: "Anomalie FRG-03 - Groupe frigorifique",
+                vehicle: "FRG-03 - Remorque frigorifique Chereau",
+                date: "16/07/2025, 14:45",
+                user: "Sophie Moreau",
+                location: "Atelier maintenance",
+                coordinates: "45.4215°N, 4.3247°E",
+                status: "anomalie",
+                severity: "important",
+                description: "Groupe frigorifique : défaut température détecté - Maintenance urgente requise",
+                photos: [
+                    {
+                        url: "https://images.unsplash.com/photo-1563897024140-8d92e8d8e9ae?w=400&h=300&fit=crop",
+                        title: "Écran défaut température",
+                        type: "anomalie",
+                        status: "anomalie",
+                        anomaly: "Alerte température affichée"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1554672723-d42a16e533db?w=400&h=300&fit=crop",
+                        title: "Compresseur - Surchauffe",
+                        type: "anomalie",
+                        status: "anomalie",
+                        anomaly: "Compresseur en surchauffe"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=400&h=300&fit=crop",
+                        title: "Condenseur encrassé",
+                        type: "anomalie",
+                        status: "anomalie",
+                        anomaly: "Condenseur nécessite nettoyage"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=300&fit=crop",
+                        title: "Groupe frigorifique général",
+                        type: "vue_generale",
+                        status: "anomalie"
+                    }
+                ]
+            },
+            anomaly_3: {
+                title: "Anomalie T008 - Rétroviseur cassé",
+                vehicle: "T008 - Iveco Stralis (BTP Construction)",
+                date: "Aujourd'hui, 09:30",
+                user: "Jean Dupont (partenaire)",
+                location: "Chantier BTP",
+                coordinates: "45.7578°N, 4.8320°E",
+                status: "anomalie",
+                severity: "minor",
+                description: "Rétroviseur cassé côté passager - Signalé par un partenaire",
+                photos: [
+                    {
+                        url: "https://images.unsplash.com/photo-1544829099-b9a0c5303bea?w=400&h=300&fit=crop",
+                        title: "Rétroviseur cassé - Vue générale",
+                        type: "anomalie",
+                        status: "anomalie",
+                        anomaly: "Rétroviseur passager endommagé"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1553726618-5f4da6b7e11c?w=400&h=300&fit=crop",
+                        title: "Détail des dégâts",
+                        type: "anomalie",
+                        status: "anomalie",
+                        anomaly: "Glace fissurée"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1623634890676-42b5946afc34?w=400&h=300&fit=crop",
+                        title: "Support rétroviseur",
+                        type: "verification",
+                        status: "ok"
+                    }
+                ]
+            },
+            inspection_4: {
+                title: "Inspection TRR-05 - Tracteur Renault",
+                vehicle: "TRR-05 - Tracteur Renault T High",
+                date: "Aujourd'hui, 11:45",
+                user: "Thomas Froid",
+                location: "Autoroute A6 - Aire de Mâcon",
+                coordinates: "46.3063°N, 4.8483°E",
+                status: "conforme",
+                photos: [
+                    {
+                        url: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop",
+                        title: "Vue avant tracteur",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=400&h=300&fit=crop",
+                        title: "Tableau de bord",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1544829099-b9a0c5303bea?w=400&h=300&fit=crop",
+                        title: "Attelage semi-remorque",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1553726618-5f4da6b7e11c?w=400&h=300&fit=crop",
+                        title: "Contrôle pneumatique",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1606016159991-24bc19d0f0f3?w=400&h=300&fit=crop",
+                        title: "Vue d'ensemble",
+                        type: "supplementaire",
+                        status: "ok"
+                    }
+                ]
+            },
+            inspection_5: {
+                title: "Inspection MAN-E01 - Chariot élévateur",
+                vehicle: "MAN-E01 - Chariot élévateur Toyota",
+                date: "Aujourd'hui, 14:30",
+                user: "Léa Mécanique",
+                location: "Atelier Central",
+                coordinates: "45.4215°N, 4.3247°E",
+                status: "conforme",
+                photos: [
+                    {
+                        url: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop",
+                        title: "Vue générale chariot",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=400&h=300&fit=crop",
+                        title: "Mât et fourches",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1544829099-b9a0c5303bea?w=400&h=300&fit=crop",
+                        title: "Système hydraulique",
+                        type: "obligatoire",
+                        status: "ok"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1553726618-5f4da6b7e11c?w=400&h=300&fit=crop",
+                        title: "Poste de conduite",
+                        type: "obligatoire",
+                        status: "ok"
+                    }
+                ]
+            }
+        };
+
+        // Navigation entre sections
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.content-section');
+            const pageTitle = document.querySelector('.page-title');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetSection = this.getAttribute('data-section');
+                    
+                    // Navigation
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    const section = document.getElementById(targetSection + '-section');
+                    if (section) {
+                        section.classList.add('active');
+                    }
+                    
+                    // Mise à jour du titre
+                    const titles = {
+                        'users': 'Gestion des utilisateurs',
+                        'vehicles': 'Gestion du matériel',
+                        'depots': 'Dépôts & Ateliers',
+                        'mobile': 'Application mobile',
+                        'partnerships': 'Partenariats',
+                        'monitoring': 'Suivi & Anomalies'
+                    };
+                    
+                    if (titles[targetSection]) {
+                        pageTitle.textContent = titles[targetSection];
+                    }
+                });
+            });
+        });
+
+        // Fonction pour afficher la galerie de photos d'inspection
+        function viewPhotoGallery(inspectionId) {
+            const data = photoData[inspectionId];
+            if (!data) return;
+
+            const modal = document.getElementById('photoGalleryModal');
+            const title = document.getElementById('galleryTitle');
+            const info = document.getElementById('galleryInfo');
+            const grid = document.getElementById('photoGalleryGrid');
+
+            title.textContent = data.title;
+            
+            // Informations de l'inspection avec coordonnées GPS
+            const statusClass = data.status === 'conforme' ? 'badge-green' : 
+                               data.status === 'anomalie' ? 'badge-yellow' : 'badge-orange';
+            const statusText = data.status === 'conforme' ? '🟢 Conforme' : 
+                              data.status === 'anomalie' ? '🟡 Anomalie détectée' : '🟠 Maintenance requise';
+
+            info.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div>
+                        <strong>Matériel :</strong> ${data.vehicle}<br>
+                        <strong>Utilisateur :</strong> ${data.user}<br>
+                        <strong>Date :</strong> ${data.date}
+                    </div>
+                    <div>
+                        <strong>Localisation :</strong> ${data.location}<br>
+                        <strong>Position GPS :</strong> <span class="gps-coordinates">${data.coordinates}</span><br>
+                        <strong>Nombre de photos :</strong> ${data.photos.length}<br>
+                        <strong>Résultat :</strong> <span class="badge ${statusClass}">${statusText}</span>
+                    </div>
+                </div>
+            `;
+
+            // Grille de photos
+            grid.innerHTML = '';
+            data.photos.forEach((photo, index) => {
+                const photoDiv = document.createElement('div');
+                photoDiv.className = 'photo-item';
+                
+                const statusBadge = photo.status === 'ok' ? '<span class="badge badge-green">✓ Normal</span>' :
+                                   photo.status === 'anomalie' ? '<span class="badge badge-yellow">⚠️ Anomalie</span>' :
+                                   '<span class="badge badge-orange">🔧 Maintenance</span>';
+
+                photoDiv.innerHTML = `
+                    <img src="${photo.url}" alt="${photo.title}" onclick="openLightbox('${photo.url}', '${photo.title}')">
+                    <div class="photo-info">
+                        <div class="photo-title">${photo.title}</div>
+                        <div class="photo-meta">
+                            Type: ${photo.type}<br>
+                            ${photo.anomaly ? `<small style="color: var(--orange);">${photo.anomaly}</small>` : ''}
+                        </div>
+                        <div class="photo-status">${statusBadge}</div>
+                    </div>
+                `;
+                grid.appendChild(photoDiv);
+            });
+
+            modal.classList.add('show');
+        }
+
+        // Fonction pour afficher les détails d'une anomalie
+        function viewAnomalyDetails(anomalyId) {
+            const data = photoData[anomalyId];
+            if (!data) return;
+
+            const modal = document.getElementById('photoGalleryModal');
+            const title = document.getElementById('galleryTitle');
+            const info = document.getElementById('galleryInfo');
+            const grid = document.getElementById('photoGalleryGrid');
+
+            title.textContent = data.title;
+            
+            // Informations de l'anomalie avec description détaillée et coordonnées GPS
+            const severityClass = data.severity === 'minor' ? 'anomaly-detail-card minor' : 'anomaly-detail-card critical';
+            const severityText = data.severity === 'minor' ? '🟡 Mineur' : '🟠 Important';
+
+            info.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div>
+                        <strong>Matériel :</strong> ${data.vehicle}<br>
+                        <strong>Signalé par :</strong> ${data.user}<br>
+                        <strong>Date :</strong> ${data.date}
+                    </div>
+                    <div>
+                        <strong>Localisation :</strong> ${data.location}<br>
+                        <strong>Position GPS :</strong> <span class="gps-coordinates">${data.coordinates}</span><br>
+                        <strong>Criticité :</strong> <span class="badge badge-${data.severity === 'minor' ? 'yellow' : 'orange'}">${severityText}</span><br>
+                        <strong>Photos :</strong> ${data.photos.length}
+                    </div>
+                </div>
+                <div class="${severityClass}">
+                    <strong>Description de l'anomalie :</strong><br>
+                    ${data.description}
+                </div>
+            `;
+
+            // Grille de photos avec focus sur l'anomalie
+            grid.innerHTML = '';
+            data.photos.forEach((photo, index) => {
+                const photoDiv = document.createElement('div');
+                photoDiv.className = 'photo-item';
+                
+                const statusBadge = photo.status === 'ok' ? '<span class="badge badge-green">✓ Normal</span>' :
+                                   photo.status === 'anomalie' ? '<span class="badge badge-red">⚠️ Anomalie</span>' :
+                                   '<span class="badge badge-orange">🔧 Vérification</span>';
+
+                photoDiv.innerHTML = `
+                    <img src="${photo.url}" alt="${photo.title}" onclick="openLightbox('${photo.url}', '${photo.title}')">
+                    <div class="photo-info">
+                        <div class="photo-title">${photo.title}</div>
+                        <div class="photo-meta">
+                            Type: ${photo.type}<br>
+                            ${photo.anomaly ? `<small style="color: var(--red); font-weight: 600;">${photo.anomaly}</small>` : ''}
+                        </div>
+                        <div class="photo-status">${statusBadge}</div>
+                    </div>
+                `;
+                grid.appendChild(photoDiv);
+            });
+
+            modal.classList.add('show');
+        }
+
+        // Fonction pour ouvrir le lightbox
+        function openLightbox(imageUrl, title) {
+            const lightbox = document.getElementById('lightbox');
+            const image = document.getElementById('lightboxImage');
+            
+            image.src = imageUrl;
+            image.alt = title;
+            lightbox.classList.add('show');
+        }
+
+        // Fonction pour fermer le lightbox
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('show');
+        }
+
+        // Fonction pour fermer la galerie de photos
+        function closePhotoGallery() {
+            document.getElementById('photoGalleryModal').classList.remove('show');
+        }
+
+        // Mise à jour des types selon la catégorie
+        function updateTypeOptions(categorySelect) {
+            const typeSelect = document.getElementById('typeSelect');
+            const category = categorySelect.value;
+            
+            // Vider les options
+            typeSelect.innerHTML = '';
+            
+            if (category && vehicleTypes[category]) {
+                vehicleTypes[category].forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type.value;
+                    option.textContent = type.text;
+                    typeSelect.appendChild(option);
+                });
+            } else {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'Choisir d\'abord une catégorie';
+                typeSelect.appendChild(option);
+            }
+        }
+
+        // Gestion des onglets dépôts
+        function showDepotTab(tabName) {
+            // Cacher tous les contenus
+            document.getElementById('depot-list').style.display = 'none';
+            document.getElementById('depot-add').style.display = 'none';
+            document.getElementById('depot-assignments').style.display = 'none';
+            
+            // Afficher le contenu sélectionné
+            switch(tabName) {
+                case 'list':
+                    document.getElementById('depot-list').style.display = 'block';
+                    break;
+                case 'add':
+                    document.getElementById('depot-add').style.display = 'block';
+                    break;
+                case 'assignments':
+                    document.getElementById('depot-assignments').style.display = 'block';
+                    break;
+            }
+            
+            // Mettre à jour les onglets actifs
+            document.querySelectorAll('.sub-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Gestion des formulaires
+        document.getElementById('vehicle-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('vehicle-notification');
+            this.reset();
+        });
+
+        document.getElementById('invitation-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('invitation-notification');
+            this.reset();
+        });
+
+        document.getElementById('depot-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('depot-notification');
+            this.reset();
+        });
+
+        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Utilisateur créé avec succès ! Un email avec les identifiants a été envoyé.');
+            closeModal('addUserModal');
+            this.reset();
+        });
+
+        // Fonctions utilitaires
+        function showNotification(id) {
+            const notification = document.getElementById(id);
+            if (notification) {
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 5000);
+            }
+        }
+
+        function showAddUserModal() {
+            document.getElementById('addUserModal').classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        function downloadAPK() {
+            alert('Téléchargement de l\'APK Billun Mobile...\n\nDans l\'application réelle, ceci déclencherait le téléchargement du fichier APK.');
+        }
+
+        function sendDownloadLinks() {
+            alert('Liens de téléchargement envoyés par email à tous les utilisateurs !\n\nEmails envoyés à :\n- jean.dupont@transport-dubois.fr\n- sophie.moreau@transport-dubois.fr\n- lea.mecanique@transport-dubois.fr\n- thomas.froid@transport-dubois.fr\n- michel.pneu@transport-dubois.fr\n- Et tous les autres utilisateurs actifs');
+        }
+
+        function handleLogout() {
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                alert('Déconnexion réussie. Redirection vers la page de connexion...');
+            }
+        }
+
+        // Gestion du champ carburant "Autre"
+        function toggleOtherFuel(selectElement) {
+            const otherFuelGroup = document.getElementById('otherFuelGroup');
+            const otherFuelInput = document.querySelector('input[name="otherFuel"]');
+            
+            if (selectElement.value === 'autre') {
+                otherFuelGroup.style.display = 'block';
+                otherFuelInput.required = true;
+            } else {
+                otherFuelGroup.style.display = 'none';
+                otherFuelInput.required = false;
+                otherFuelInput.value = '';
+            }
+        }
+
+        // Fermer les modals en cliquant à l'extérieur
+        window.addEventListener('click', function(e) {
+            const modals = document.querySelectorAll('.modal, .photo-gallery-modal, .lightbox');
+            modals.forEach(modal => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        });
+
+        // Gestion du clavier pour fermer les modals
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Fermer tous les modals ouverts
+                document.querySelectorAll('.modal.show, .photo-gallery-modal.show, .lightbox.show').forEach(modal => {
+                    modal.classList.remove('show');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
